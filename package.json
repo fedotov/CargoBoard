@@ -1,0 +1,39 @@
+{
+  "name": "CargoBoard",
+  "version": "1.0.0",
+  "description": "Cargo terminal board",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snollygolly/koa-starter.git"
+  },
+  "keywords": [
+    "Cargo board"
+  ],
+  "author": "fdm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/snollygolly/koa-starter/issues"
+  },
+  "homepage": "https://github.com/snollygolly/koa-starter#readme",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "fs-extra-promise": "latest",
+    "lodash": "latest",
+    "request": "^2.75.0",
+    "request-promise": "latest",
+    "nodemailer": "latest",
+      "moment": "latest",
+      "moment-duration-format": "latest",
+      "moment-timer": "latest",
+      "moment-round": "latest"
+  },
+  "devDependencies": {},
+  "engines" : {
+    "node": "6.1.x"
+  }
+}
