@@ -15,14 +15,14 @@ console.log(`${moment().format()}: Next update in  ${intervalToUpdate.format('HH
 
 //moment.duration(config.updateIntervalInSeconds, 'seconds').timer({ wait: intervalToUpdate, loop: true, executeAfterWait: true }, update);
 
-//interval(update, intervalToUpdate, moment.duration(config.updateIntervalInSeconds, 'seconds'));
-
+interval(update, intervalToUpdate, moment.duration(config.updateIntervalInSeconds, 'seconds'));
+/*
 interval(() => {
     let curTime = moment().utcOffset(config.usersTimeZone).round(30, 'seconds');
     let secondsFromStartOfTheDay = Math.round((curTime - moment().utcOffset(config.usersTimeZone).startOf('day')) / 1000);
     console.log(curTime.format(), secondsFromStartOfTheDay);
 }, moment.duration(1, 'seconds'), moment.duration(config.updateIntervalInSeconds, 'seconds'));
-
+*/
 
 function getNextUpdateInterval() {
     let secondsFromStartOfTheDay = moment().unix() % (60 * 60 * 24);
@@ -33,8 +33,8 @@ function getNextUpdateInterval() {
 }
 
 function update() {
-    let curTime = moment().round(30, 'seconds');
-    let secondsFromStartOfTheDay = Math.round((curTime - moment().startOf('day')) / 1000);
+    let curTime = moment().utcOffset(config.usersTimeZone).round(30, 'seconds');
+    let secondsFromStartOfTheDay = Math.round((curTime - moment().utcOffset(config.usersTimeZone).startOf('day')) / 1000);
 
     loadBoardPage().then(tables => {
         validateResponse(tables);
