@@ -13,30 +13,38 @@ const isThereAnyInteresting = require('./parseHtmlTable').isThereAnyInteresting;
 let intervalToUpdate = getNextUpdateInterval();
 console.log(`${moment().format()}: Next update in  ${intervalToUpdate.format('HH:mm:ss')}`);
 
-moment.duration(config.updateIntervalInSeconds, 'seconds')
-    .timer({ wait: intervalToUpdate, loop: true, executeAfterWait: true }, update);
+//moment.duration(config.updateIntervalInSeconds, 'seconds').timer({ wait: intervalToUpdate, loop: true, executeAfterWait: true }, update);
+
+//interval(update, intervalToUpdate, moment.duration(config.updateIntervalInSeconds, 'seconds'));
+
+interval(() => {
+    let curTime = moment().utcOffset(config.usersTimeZone).round(30, 'seconds');
+    let secondsFromStartOfTheDay = Math.round((curTime - moment().utcOffset(config.usersTimeZone).startOf('day')) / 1000);
+    console.log(curTime.format(), secondsFromStartOfTheDay);
+}, moment.duration(1, 'seconds'), moment.duration(config.updateIntervalInSeconds, 'seconds'));
+
 
 function getNextUpdateInterval() {
     let secondsFromStartOfTheDay = moment().unix() % (60 * 60 * 24);
     let step = config.updateIntervalInSeconds;
     let intervalToUpdate = step - secondsFromStartOfTheDay % step;
+    console.log(`${secondsFromStartOfTheDay}   ${step}    ${intervalToUpdate}`);
     return moment.duration(intervalToUpdate, 'seconds');
 }
 
 function update() {
     let curTime = moment().round(30, 'seconds');
+    let secondsFromStartOfTheDay = Math.round((curTime - moment().startOf('day')) / 1000);
 
     loadBoardPage().then(tables => {
         validateResponse(tables);
 
-        let secondsFromStartOfTheDay = Math.round((curTime - moment().startOf('day')) / 1000);
         let isMandatory = _.some(config.mandatoryUpdatesSchedule, d => d.asSeconds() === secondsFromStartOfTheDay);
 
         let parsedTables = _.map(tables, t => parseHtmlTable(t));
         let isThereNoTablesUpdate = !isThereAnyInteresting(parsedTables);
 
         console.log(`${curTime.format()}:   ${!isMandatory && isThereNoTablesUpdate ? 'no changes' : 'UPDATE'}`);
-        console.log(isMandatory, isThereNoTablesUpdate, secondsFromStartOfTheDay);
         if (!isMandatory && isThereNoTablesUpdate)
             return 0;
 
@@ -56,4 +64,41 @@ function validateResponse(tables) {
     else if (_.some(tables, str => !str || str === '')) {
         throw new Error('At least one of tables is null or empty string');
     }
+}
+
+/*
+function interval(func, wait, times) {
+    var interv = function(w, t) {
+        return function() {
+            if (typeof t === 'undefined' || t-- > 0) {
+                setTimeout(interv, w);
+                try {
+                    func.call(null);
+                }
+                catch(e) {
+                    t = 0;
+                    throw e.toString();
+                }
+            }
+        };
+    }(wait, times);
+
+    setTimeout(interv, wait);
+}
+*/
+function interval(func, firstCall, wait, times) {
+    var interv = function() {
+        if (typeof times === 'undefined' || times-- > 0) {
+            setTimeout(interv, wait.asMilliseconds());
+            try {
+                func.call(null);
+            }
+            catch(e) {
+                times = 0;
+                throw e.toString();
+            }
+        }
+    };
+
+    setTimeout(interv, firstCall.asMilliseconds());
 }
