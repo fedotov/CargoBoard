@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('start');
+console.log('start ...');
 
 require('./startServer');
 require('./board/updateLoop');
