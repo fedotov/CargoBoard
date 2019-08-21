@@ -1,7 +1,7 @@
 {
     "usersTimeZone": "+02:00",
     "sourcePageUrl": "https://kbp.aero/ru/airport-services/cargo/cargo-shedule/",
-    "updateIntervalInSeconds": 1800,
+    "updateIntervalInSeconds": 1808,
     "mandatoryUpdatesSchedule": [
         "PT6H",
         "PT18H"
