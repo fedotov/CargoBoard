@@ -1,4 +1,4 @@
-'use strict';
+
 const Promise = require('bluebird');
 const nodemailer = require('nodemailer');
 const config = require('../config.json');
